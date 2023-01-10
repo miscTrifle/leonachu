@@ -53,17 +53,19 @@ namespace leonachu {
     function checkLightness (pin: ADCPins, light: Lightness): boolean {
         switch (light) {
             case Lightness.light:
+                if (readADCPin(pin) >= level) {
+                    return true
+                } else {
+                    return false
+                }
+                break
+            case Lightness.dark:
                 if (readADCPin(pin) <= level) {
                     return true
                 } else {
                     return false
                 }
-            case Lightness.dark:
-                if (readADCPin(pin) > level) {
-                    return true
-                } else {
-                    return false
-                }
+                break
         }
     }
 
@@ -97,14 +99,14 @@ namespace leonachu {
 
     //% blockId=leonachu_left_lightness
     //% block="lewy widzi %light"
-    //% weight=80 blockGap=8
+    //% weight=75 blockGap=8
     export function leftLightness(light: Lightness): boolean {
         return checkLightness(leftPin, light)
     }
 
     //% blockId=leonachu_right_lightness
     //% block="prawy widzi %light"
-    //% weight=80 blockGap=8
+    //% weight=70 blockGap=8
     export function rightLightness(light: Lightness): boolean {
         return checkLightness(rightPin, light)
     }
