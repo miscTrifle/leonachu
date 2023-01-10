@@ -1,6 +1,6 @@
 {
     "name": "leonachu",
-    "description": "",
+    "description": "IR reflectance sensors library made for Leon & Pikachu",
     "dependencies": {
         "core": "*",
         "radio": "*",
