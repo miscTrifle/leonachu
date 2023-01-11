@@ -1,6 +1,6 @@
 {
     "name": "leonachu",
-    "description": "IR reflectance sensors library made for Leon & Pikachu",
+    "description": "IR reflectance sensors library made for Leon & Pikachu (block names in Polish)",
     "dependencies": {
         "core": "*",
         "radio": "*",

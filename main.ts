@@ -34,7 +34,7 @@ namespace leonachu {
                 value = pins.analogReadPin(AnalogPin.P2)
                 break
         }
-        return ((1023 - value) * 100) / 1023;   // 'negate' the read value and convert to 0...100
+        return ((1023 - value) * 100) / 1023;   // 'negate' the read value and convert to 0...100 range
     }
 
     //% blockId=leonachu_set_level
@@ -47,7 +47,7 @@ namespace leonachu {
             value = 100
         if (value < 0)
             value = 0
-        level = ((100 - value) * 1023) / 100  // 'negate' the level and convert to 0...1023
+        level = value
     }
 
     function checkLightness (pin: ADCPins, light: Lightness): boolean {
