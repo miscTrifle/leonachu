@@ -8,6 +8,7 @@ namespace leonachu {
         //% block="P2"
         P2
     }
+
     export enum Lightness {
         //% block="jasny"
         light,
@@ -16,7 +17,7 @@ namespace leonachu {
     }
 
     // global variables and setting default values
-    let level = 50 // percents of 2^10-1
+    let level = 50 // percents of 1023 (2^10-1)
     let leftPin = ADCPins.P0
     let rightPin = ADCPins.P1
 
@@ -35,6 +36,23 @@ namespace leonachu {
                 break
         }
         return ((1023 - value) * 100) / 1023;   // 'negate' the read value and convert to 0...100 range
+    }
+
+    // sets IR LED current in range 0..30mA (0..100%)
+    function setCurrent(pin: DigitalPin, current: number) {
+        let pulses = 32 - pins.map(current, 0, 100, 0, 32)
+        pins.digitalWritePin(pin, 0)        // turn off LED, current = 0mA (pulses == 32)
+        if (pulses <= 31) {
+            control.waitMicros(1100)            // reset LED current to full current (30mA), wait > 1ms, (pulses == 0)
+            pins.digitalWritePin(pin, 1)
+            control.waitMicros(10)
+            for (let i = 1; i <= pulses; i++) { // current[%] = 100% - pulses * 100%/32 (1 pulse -> 96,67% * 30mA, 31 pulses -> 1,67% * 30mA)
+                pins.digitalWritePin(pin, 0)
+                control.waitMicros(10)
+                pins.digitalWritePin(pin, 1)
+                control.waitMicros(10)
+            }
+        }
     }
 
     //% blockId=leonachu_set_level
@@ -69,18 +87,24 @@ namespace leonachu {
         }
     }
 
-    //% blockId=leonachu_set_left_pin
-    //% block="lewy na %pin"
+    //% blockId=leonachu_set_left_sensor_parameters
+    //% block="lewy na %photoPin LED na %ctrlPin z mocą %current procent"
+    //% current.min=0 current.max=100
+    //% current.defl=100
     //% weight=95 blockGap=8
-    export function chooseLeft(pin: ADCPins) {
-        leftPin = pin
+    export function setLeft(photoPin: ADCPins, ctrlPin: DigitalPin, current: number) {
+        leftPin = photoPin
+        setCurrent(ctrlPin, current)
     }
 
-    //% blockId=leonachu_set_right_pin
-    //% block="prawy na %pin"
+    //% blockId=leonachu_set_right_sensor_parameters
+    //% block="prawy na %photoPin LED na %ctrlPin z mocą %current procent"
+    //% current.min=0 current.max=100
+    //% current.defl=100
     //% weight=90 blockGap=8
-    export function chooseRight(pin: ADCPins) {
-        rightPin = pin
+    export function setRight(photoPin: ADCPins, ctrlPin: DigitalPin, current: number) {
+        rightPin = photoPin
+        setCurrent(ctrlPin, current)
     }
 
     //% blockId=leonachu_sensor_read_left
